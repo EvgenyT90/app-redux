@@ -1,0 +1,1 @@
+export { ChartMy } from "./componenent";
