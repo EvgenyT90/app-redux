@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
     Navbar,
     Container,
@@ -14,10 +14,12 @@ import { faCloud } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser } from "@fortawesome/free-regular-svg-icons";
 import { ROUTES } from "../../data/routers";
+import { UserContext } from "../../contexts/User.jsx";
+
 export const Navigation = () => {
     const navigate = useNavigate();
     const location = useLocation();
-    const user = localStorage.getItem("auth");
+    const { username } = useContext(UserContext);
 
     // if (user === null) {
     //     return <></>;
@@ -97,7 +99,7 @@ export const Navigation = () => {
                                             className="inline"
                                             // href={"mailto:" + user}
                                         >
-                                            Пользователь {/* {user} */}
+                                            Пользователь {username}
                                         </Nav.Link>
                                     </Card.Body>
                                 </Card>
