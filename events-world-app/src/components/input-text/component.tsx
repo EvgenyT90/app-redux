@@ -3,14 +3,20 @@ import "./styles.css";
 
 export const InputText = ({
     type = "text",
+    inputLabel,
     placeholder,
     onChange,
     value,
+    register,
+    rules,
 }: {
     type: string;
+    inputLabel: string;
     placeholder?: string;
     onChange?: any;
     value?: string;
+    register?: any;
+    rules?: any;
 }) => {
     return (
         <input
@@ -19,6 +25,7 @@ export const InputText = ({
             type={type}
             placeholder={placeholder}
             value={value}
+            {...register(inputLabel, { ...rules })}
         />
     );
 };
