@@ -4,6 +4,7 @@ import { InputText } from "../input-text";
 import { Button } from "../button";
 import { useNavigate } from "react-router-dom";
 import { SocialContainer } from "../social-container";
+import { useForm } from "react-hook-form";
 
 export const Form = ({
     action = "#",
@@ -12,6 +13,13 @@ export const Form = ({
     action: string;
     type: string;
 }) => {
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+        getValues,
+    } = useForm();
+
     let content: JSX.Element;
 
     const [userName, setUserName] = useState<string>("");
@@ -24,38 +32,18 @@ export const Form = ({
     const navigate = useNavigate();
 
     const handleChangePass1 = (event: any) => {
-        if (event.target.value.match(/^[a-z]+$/)) {
-            setUserPass1(event.target.value);
-            setPassError2(false);
-        } else {
-            setPassError2(true);
-        }
+        setUserPass1(event.target.value);
     };
 
     const handleChangePass2 = (event: any) => {
-        console.log("до======", userPass2);
-
-        if (userPass1 !== event.target.value) {
-            setPassError(true);
-        } else {
-            setPassError(false);
-        }
         setUserPass2(event.target.value);
     };
 
     const handleChangeLogin = (e: any) => {
-        if (
-            e.target.value.match(
-                /^([a-zA-Z0-9_-]+)(@)([a-zA-Z0-9_-]+)\.([a-zA-Z]{2,})$/,
-            )
-        ) {
-            const user = e.target.value;
-            setUserName(user);
-            localStorage.setItem("UserName", user);
-            setEmailError(false);
-        } else {
-            setEmailError(true);
-        }
+        const user = e.target.value;
+        setUserName(user);
+        localStorage.setItem("UserName", user);
+        console.log(user);
     };
 
     //Загрузка имени пользователя в locaTgorage бриазуре
@@ -66,7 +54,7 @@ export const Form = ({
 
     useEffect(() => {});
 
-    const handleClickSignIn = () => {
+    const handleClickSignIn = (data: any) => {
         fetch("http://localhost:4040/user", {
             method: "get",
             headers: {
@@ -87,7 +75,8 @@ export const Form = ({
         });
     };
 
-    const handleClickSignUp = () => {
+    const handleClickSignUp = (data: any) => {
+        console.log(data);
         fetch("http://localhost:4040/login", {
             method: "post",
             headers: {
@@ -98,83 +87,188 @@ export const Form = ({
             },
             //make sure to serialize your JSON body
             body: JSON.stringify({
-                name: userName,
-                password: userName,
-                email: userName,
+                name: data.login,
+                password: data.password,
+                email: data.email,
             }),
         }).then((response) => {
-            //localStorage.setItem("auth", "true");
+            if (response.ok) {
+                navigate("/");
+            }
         });
     };
 
     switch (type) {
         case "signin":
             content = (
-                <form action="#">
+                <form action="#" onSubmit={handleSubmit(handleClickSignIn)}>
                     <h1>Вход</h1>
                     <SocialContainer />
                     <span>или используйте Ваш аккаунт</span>
                     <InputText
                         type="email"
-                        placeholder="Email"
+                        placeholder="Введите Email"
+                        inputLabel="email"
+                        register={register}
+                        rules={{
+                            required: true,
+                            pattern:
+                                /^([a-zA-Z0-9_-]+)(@)([a-zA-Z0-9_-]+)\.([a-zA-Z]{2,})$/,
+                        }}
                         onChange={handleChangeLogin}
-                        value={userName}
                     />
-                    {isEmailError && (
-                        <div style={{ color: "red" }}>Не валидный email</div>
+                    {errors.email && errors.email.type === "pattern" && (
+                        <div style={{ color: "red" }}>
+                            Почтовый адрес не соответвует виду
+                            exapmle@company.com
+                        </div>
                     )}
                     <InputText
                         type="password"
-                        placeholder="Password"
-                        onChange={(event: any) => handleChangePass1(event)}
+                        placeholder="Введите пароль"
+                        inputLabel="password"
+                        register={register}
+                        rules={{
+                            required: true,
+                            pattern: /(?=.*[0-9])(?=.*[\_\-*])(?=.*[a-z])/,
+                            onChange: (event: any) => handleChangePass1(event),
+                        }}
                     />
                     {isPassError2 && (
                         <div style={{ color: "red" }}>Только англ символы</div>
                     )}
+                    {errors.password && errors.password.type === "required" && (
+                        <div style={{ color: "red" }}>
+                            Необходимо ввести пароль
+                        </div>
+                    )}
+                    {errors.password && errors.password.type === "pattern" && (
+                        <div style={{ color: "red" }}>
+                            Пароль может содержать только английские символы +
+                            спец символы (_ , - , *)
+                        </div>
+                    )}
                     <a href="#">Забыли пароль</a>
-                    <Button OnClick={handleClickSignIn} text="Вход" />
-                    {/* <Button type="primary">Вход</Button> */}
+                    <Button type="submit" text="Вход" />
                 </form>
             );
             break;
         case "signup":
             content = (
-                <form action={action}>
+                <form
+                    action={action}
+                    onSubmit={handleSubmit(handleClickSignUp)}
+                >
                     <h1>Создайте пользователя</h1>
                     <SocialContainer />
                     <span>или используйте Ваше e-mail для регистрации</span>
-                    <InputText type="text" placeholder="Введите логин" />
-                    {isLoginError && (
+                    <InputText
+                        type="text"
+                        placeholder="Введите логин"
+                        inputLabel="login"
+                        register={register}
+                        rules={{
+                            required: true,
+                            minLength: 5,
+                            maxLength: 20,
+                            pattern: /^([a-zA-Z0-9]+)$/,
+                        }}
+                    />
+                    {errors.login && errors.login.type === "minLength" && (
                         <div style={{ color: "red" }}>
-                            Только цифры или англ буквы
+                            Минимальная длина логина 5 символа
+                        </div>
+                    )}
+                    {errors.login && errors.login.type === "maxLength" && (
+                        <div style={{ color: "red" }}>
+                            Минимальная длина логина 20 символа
+                        </div>
+                    )}
+                    {errors.login && errors.login.type === "pattern" && (
+                        <div style={{ color: "red" }}>
+                            Логин может содержать только английские символы и
+                            цифры
                         </div>
                     )}
                     <InputText
                         type="email"
                         placeholder="Введите Email"
+                        inputLabel="email"
+                        register={register}
+                        rules={{
+                            required: true,
+                            pattern:
+                                /^([a-zA-Z0-9_-]+)(@)([a-zA-Z0-9_-]+)\.([a-zA-Z]{2,})$/,
+                        }}
                         onChange={handleChangeLogin}
                     />
-                    {isEmailError && (
-                        <div style={{ color: "red" }}>Не валидный email</div>
+                    {errors.email && errors.email.type === "pattern" && (
+                        <div style={{ color: "red" }}>
+                            Почтовый адрес не соответвует виду
+                            exapmle@company.com
+                        </div>
                     )}
                     <InputText
                         type="password"
                         placeholder="Введите пароль"
-                        onChange={(event: any) => handleChangePass1(event)}
+                        inputLabel="password"
+                        register={register}
+                        rules={{
+                            required: true,
+                            pattern: /(?=.*[0-9])(?=.*[\_\-*])(?=.*[a-z])/,
+                            onChange: (event: any) => handleChangePass1(event),
+                        }}
                     />
                     {isPassError2 && (
                         <div style={{ color: "red" }}>Только англ символы</div>
                     )}
+                    {errors.password && errors.password.type === "required" && (
+                        <div style={{ color: "red" }}>
+                            Необходимо ввести пароль
+                        </div>
+                    )}
+                    {errors.password && errors.password.type === "pattern" && (
+                        <div style={{ color: "red" }}>
+                            Пароль может содержать только английские символы +
+                            спец символы (_ , - , *)
+                        </div>
+                    )}
                     <InputText
                         type="password"
+                        inputLabel="password2"
+                        register={register}
+                        rules={{
+                            required: true,
+                            pattern: /(?=.*[0-9])(?=.*[\_\-*])(?=.*[a-z])/,
+                            validate: (value: any) =>
+                                value === getValues("password"),
+                            onChange: (event: any) => handleChangePass2(event),
+                        }}
                         placeholder="Пвоторите ввод пароля"
-                        onChange={(event: any) => handleChangePass2(event)}
                     />
                     {isPassError && (
                         <div style={{ color: "red" }}>Пароли не совпадают</div>
                     )}
-                    <Button OnClick={handleClickSignUp} text="Регистрация" />
-                    {/* <Button type="primary">Регистрация</Button> */}
+                    {errors.password2 &&
+                        errors.password2.type === "required" && (
+                            <div style={{ color: "red" }}>
+                                Необходимо ввести пароль еще раз
+                            </div>
+                        )}
+                    {errors.password2 &&
+                        errors.password2.type === "pattern" && (
+                            <div style={{ color: "red" }}>
+                                Пароль может содержать только английские символы
+                                + спец символы (_ , - , *)
+                            </div>
+                        )}
+                    {errors.password2 &&
+                        errors.password2.type === "validate" && (
+                            <div style={{ color: "red" }}>
+                                Пароли не совпадают
+                            </div>
+                        )}
+                    <Button type="submit" text="Регистрация" />
                 </form>
             );
             break;
