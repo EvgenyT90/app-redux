@@ -3,7 +3,7 @@ import "./styles.css";
 import { Form } from "../../components";
 import { Overlay } from "../../components";
 import withLogger from "../../hocs/withLogger";
-import { UserContext } from "../../contexts/User";
+import { UserContext } from "../../contexts/User.jsx";
 
 export const Login: React.FC = () => {
     const value = useContext(UserContext);
