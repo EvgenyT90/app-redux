@@ -16,7 +16,7 @@ export const Form = ({
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isValid },
         getValues,
     } = useForm();
 
@@ -107,6 +107,13 @@ export const Form = ({
                     <span>или используйте Ваш аккаунт</span>
                     <InputText
                         type="email"
+                        className1={`InputText ${
+                            errors.email
+                                ? "input--error"
+                                : isValid
+                                ? "input--success"
+                                : ""
+                        }`}
                         placeholder="Введите Email"
                         inputLabel="email"
                         register={register}
@@ -118,13 +125,20 @@ export const Form = ({
                         onChange={handleChangeLogin}
                     />
                     {errors.email && errors.email.type === "pattern" && (
-                        <div style={{ color: "red" }}>
+                        <div style={{ color: "red", fontSize: "0.7em" }}>
                             Почтовый адрес не соответвует виду
                             exapmle@company.com
                         </div>
                     )}
                     <InputText
                         type="password"
+                        className1={`InputText ${
+                            errors.password
+                                ? "input--error"
+                                : isValid
+                                ? "input--success"
+                                : ""
+                        }`}
                         placeholder="Введите пароль"
                         inputLabel="password"
                         register={register}
@@ -134,16 +148,14 @@ export const Form = ({
                             onChange: (event: any) => handleChangePass1(event),
                         }}
                     />
-                    {isPassError2 && (
-                        <div style={{ color: "red" }}>Только англ символы</div>
-                    )}
+
                     {errors.password && errors.password.type === "required" && (
-                        <div style={{ color: "red" }}>
+                        <div style={{ color: "red", fontSize: "0.7em" }}>
                             Необходимо ввести пароль
                         </div>
                     )}
                     {errors.password && errors.password.type === "pattern" && (
-                        <div style={{ color: "red" }}>
+                        <div style={{ color: "red", fontSize: "0.7em" }}>
                             Пароль может содержать только английские символы +
                             спец символы (_ , - , *)
                         </div>
@@ -163,6 +175,13 @@ export const Form = ({
                     <SocialContainer />
                     <span>или используйте Ваше e-mail для регистрации</span>
                     <InputText
+                        className1={`InputText ${
+                            errors.login
+                                ? "input--error"
+                                : isValid
+                                ? "input--success"
+                                : ""
+                        }`}
                         type="text"
                         placeholder="Введите логин"
                         inputLabel="login"
@@ -175,23 +194,30 @@ export const Form = ({
                         }}
                     />
                     {errors.login && errors.login.type === "minLength" && (
-                        <div style={{ color: "red" }}>
+                        <div style={{ color: "red", fontSize: "0.7em" }}>
                             Минимальная длина логина 5 символа
                         </div>
                     )}
                     {errors.login && errors.login.type === "maxLength" && (
-                        <div style={{ color: "red" }}>
+                        <div style={{ color: "red", fontSize: "0.7em" }}>
                             Минимальная длина логина 20 символа
                         </div>
                     )}
                     {errors.login && errors.login.type === "pattern" && (
-                        <div style={{ color: "red" }}>
+                        <div style={{ color: "red", fontSize: "0.7em" }}>
                             Логин может содержать только английские символы и
                             цифры
                         </div>
                     )}
                     <InputText
                         type="email"
+                        className1={`InputText ${
+                            errors.email
+                                ? "input--error"
+                                : isValid
+                                ? "input--success"
+                                : ""
+                        }`}
                         placeholder="Введите Email"
                         inputLabel="email"
                         register={register}
@@ -203,13 +229,20 @@ export const Form = ({
                         onChange={handleChangeLogin}
                     />
                     {errors.email && errors.email.type === "pattern" && (
-                        <div style={{ color: "red" }}>
+                        <div style={{ color: "red", fontSize: "0.7em" }}>
                             Почтовый адрес не соответвует виду
                             exapmle@company.com
                         </div>
                     )}
                     <InputText
                         type="password"
+                        className1={`InputText ${
+                            errors.password
+                                ? "input--error"
+                                : isValid
+                                ? "input--success"
+                                : ""
+                        }`}
                         placeholder="Введите пароль"
                         inputLabel="password"
                         register={register}
@@ -219,22 +252,27 @@ export const Form = ({
                             onChange: (event: any) => handleChangePass1(event),
                         }}
                     />
-                    {isPassError2 && (
-                        <div style={{ color: "red" }}>Только англ символы</div>
-                    )}
+
                     {errors.password && errors.password.type === "required" && (
-                        <div style={{ color: "red" }}>
+                        <div style={{ color: "red", fontSize: "0.7em" }}>
                             Необходимо ввести пароль
                         </div>
                     )}
                     {errors.password && errors.password.type === "pattern" && (
-                        <div style={{ color: "red" }}>
+                        <div style={{ color: "red", fontSize: "0.7em" }}>
                             Пароль может содержать только английские символы +
                             спец символы (_ , - , *)
                         </div>
                     )}
                     <InputText
                         type="password"
+                        className1={`InputText ${
+                            errors.password2
+                                ? "input--error"
+                                : isValid
+                                ? "input--success"
+                                : ""
+                        }`}
                         inputLabel="password2"
                         register={register}
                         rules={{
@@ -246,25 +284,23 @@ export const Form = ({
                         }}
                         placeholder="Пвоторите ввод пароля"
                     />
-                    {isPassError && (
-                        <div style={{ color: "red" }}>Пароли не совпадают</div>
-                    )}
+
                     {errors.password2 &&
                         errors.password2.type === "required" && (
-                            <div style={{ color: "red" }}>
+                            <div style={{ color: "red", fontSize: "0.7em" }}>
                                 Необходимо ввести пароль еще раз
                             </div>
                         )}
                     {errors.password2 &&
                         errors.password2.type === "pattern" && (
-                            <div style={{ color: "red" }}>
+                            <div style={{ color: "red", fontSize: "0.7em" }}>
                                 Пароль может содержать только английские символы
                                 + спец символы (_ , - , *)
                             </div>
                         )}
                     {errors.password2 &&
                         errors.password2.type === "validate" && (
-                            <div style={{ color: "red" }}>
+                            <div style={{ color: "red", fontSize: "0.7em" }}>
                                 Пароли не совпадают
                             </div>
                         )}
