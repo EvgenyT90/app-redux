@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import { UserContext } from "./contexts/User";
+
 //import { Counter } from "./pages/test/ex1";
 import { NavLink, Link, Routes, Route } from "react-router-dom";
 import { Login, About, Contacts, EventsCatalog, Main, NotFound } from "./pages";
@@ -8,6 +8,8 @@ import { RequireAuth } from "./hocs/requireAuth";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import { ROUTES } from "./data/routers";
+import { useWindowSize } from "./hooks/useWindowSize";
+import { useDebounce } from "./hooks/useDebounce";
 
 const User: any = {
     role: "user",
@@ -15,6 +17,15 @@ const User: any = {
 };
 
 function App() {
+    const windowSize = useWindowSize();
+    //console.log(windowSize);
+    useDebounce(
+        () => {
+            console.log(windowSize);
+        },
+        2000,
+        [windowSize],
+    );
     return (
         // <UserContext.Provider value={User}>
         <Routes>
