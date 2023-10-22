@@ -9,6 +9,7 @@ export const InputText = ({
     value,
     register,
     rules,
+    className1 = "InputText",
 }: {
     type: string;
     inputLabel: string;
@@ -17,11 +18,12 @@ export const InputText = ({
     value?: string;
     register?: any;
     rules?: any;
+    className1?: any;
 }) => {
     return (
         <input
             onChange={onChange}
-            className="InputText"
+            className={className1}
             type={type}
             placeholder={placeholder}
             value={value}
