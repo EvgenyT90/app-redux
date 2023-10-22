@@ -2,6 +2,7 @@ const { read } = require("fs");
 const UserData = require("../models/user.model");
 
 exports.login = (req, res) => {
+    console.log(req);
     //Валидация данных
     if (!req.body.name) {
         return res.status(400).send({
@@ -21,7 +22,9 @@ exports.login = (req, res) => {
         .then((data) => {
             res.header("Access-Control-Allow-Origin", "*");
             res.header("Access-Control-Allow-Headers", "X-Requested-With");
+
             res.send({ data, success: true });
+            console.log(res);
         })
         .catch((error) => {
             res.status(500).send({
