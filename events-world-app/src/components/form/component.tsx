@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import "./styles.css";
 import { InputText } from "../input-text";
 import { Button } from "../button";
 import { useNavigate } from "react-router-dom";
 import { SocialContainer } from "../social-container";
 import { useForm } from "react-hook-form";
+import { UserContext } from "../../contexts/User.jsx";
 
 export const Form = ({
     action = "#",
@@ -30,6 +31,9 @@ export const Form = ({
     const [isEmailError, setEmailError] = useState<boolean>(false);
     const [isLoginError, setLoginError] = useState<boolean>(false);
     const navigate = useNavigate();
+
+    const { setUsername } = useContext(UserContext);
+    const { username } = useContext(UserContext);
 
     const handleChangePass1 = (event: any) => {
         setUserPass1(event.target.value);
@@ -70,7 +74,9 @@ export const Form = ({
             //     email: userName,
             // }),
         }).then((response) => {
-            localStorage.setItem("auth", "true");
+            //localStorage.setItem("auth", "true");
+            setUsername(data.email);
+
             navigate("/");
         });
     };
