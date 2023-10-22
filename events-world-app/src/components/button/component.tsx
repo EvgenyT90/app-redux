@@ -1,9 +1,9 @@
 import React from "react";
 import "./styles.css";
 
-export const Button = ({ text, OnClick }: { text: string; OnClick: any }) => {
+export const Button = ({ text, type }: { text: string; type: any }) => {
     return (
-        <button className="myButton" onClick={OnClick}>
+        <button className="myButton" type={type}>
             {text}
         </button>
     );
