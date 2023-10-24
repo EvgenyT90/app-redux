@@ -7,6 +7,8 @@ import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
 import { ChartMy, TableData, Navigation } from "../../components/";
 import { Alert, Space, Spin } from "antd";
+import { useTranslation } from "react-i18next";
+// import { useGetUsersQuery } from "../../services/users";
 
 interface ChartData {
     date: any;
@@ -22,6 +24,8 @@ export const Main: React.FC = () => {
     const [loc, setLoc] = useState("Omsk");
     const [tableData, setTableData] = useState<any>([["1"], ["2"], ["3"]]);
 
+    // const { data, error, isLoading, isSuccess, isError } = useGetUsersQuery();
+    const { i18n } = useTranslation();
     const [chartData, setChartData] = useState<ChartData[]>([
         {
             date: new Date(),
@@ -133,6 +137,11 @@ export const Main: React.FC = () => {
 
     return (
         <main>
+            {/* {isLoading && "Загрузка......."}
+            {isError && error.message}
+            {isSuccess &&
+                data &&
+                data.map((user: any) => <h2 key={user.id}>{user.name}</h2>)} */}
             <Navigation></Navigation>
             <Container className="mt-3 myC">
                 <InputGroup className="mb-3">
@@ -141,7 +150,7 @@ export const Main: React.FC = () => {
                         id="button-addon1"
                         onClick={(event) => getWeather(event)}
                     >
-                        Загрузить данные
+                        {i18n.t("Load data")}
                     </Button>
                     <Form.Control
                         aria-label="Example text with button addon"

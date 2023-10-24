@@ -1,3 +1,5 @@
+export { ToggleSwitch } from "./toggleswitch";
+
 export { ChartMy } from "./chart";
 export { Navigation } from "./navbar";
 export { TableData } from "./table-data";

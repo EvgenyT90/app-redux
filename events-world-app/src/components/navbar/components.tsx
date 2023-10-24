@@ -15,6 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser } from "@fortawesome/free-regular-svg-icons";
 import { ROUTES } from "../../data/routers";
 import { UserContext } from "../../contexts/User.jsx";
+import { ToggleSwitch } from "../toggleswitch";
 
 export const Navigation = () => {
     const navigate = useNavigate();
@@ -64,6 +65,7 @@ export const Navigation = () => {
                     ) : (
                         <Nav.Link href={ROUTES.about}>О проекте</Nav.Link>
                     )}
+                    <ToggleSwitch />
                 </Nav>
 
                 <Navbar.Collapse className="justify-content-end">

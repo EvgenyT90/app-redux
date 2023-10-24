@@ -6,6 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { SocialContainer } from "../social-container";
 import { useForm } from "react-hook-form";
 import { UserContext } from "../../contexts/User.jsx";
+import "../../i18n/config";
+import { useTranslation } from "react-i18next";
+import { ToggleSwitch } from "../toggleswitch";
 
 export const Form = ({
     action = "#",
@@ -34,6 +37,11 @@ export const Form = ({
 
     const { setUsername } = useContext(UserContext);
     const { username } = useContext(UserContext);
+
+    const { i18n } = useTranslation();
+    const changeLanguage = (e: any) => {
+        i18n.changeLanguage(e.target.value);
+    };
 
     const handleChangePass1 = (event: any) => {
         setUserPass1(event.target.value);
@@ -108,7 +116,7 @@ export const Form = ({
         case "signin":
             content = (
                 <form action="#" onSubmit={handleSubmit(handleClickSignIn)}>
-                    <h1>Вход</h1>
+                    <h1>{i18n.t("signin")}</h1>
                     <SocialContainer />
                     <span>или используйте Ваш аккаунт</span>
                     <InputText
@@ -168,6 +176,13 @@ export const Form = ({
                     )}
                     <a href="#">Забыли пароль</a>
                     <Button type="submit" text="Вход" />
+                    <ToggleSwitch />
+                    <button onClick={changeLanguage} value="ru">
+                        Русский язык
+                    </button>
+                    <button onClick={changeLanguage} value="en">
+                        English
+                    </button>
                 </form>
             );
             break;
@@ -177,7 +192,7 @@ export const Form = ({
                     action={action}
                     onSubmit={handleSubmit(handleClickSignUp)}
                 >
-                    <h1>Создайте пользователя</h1>
+                    <h1>{i18n.t("createUser")}</h1>
                     <SocialContainer />
                     <span>или используйте Ваше e-mail для регистрации</span>
                     <InputText
