@@ -11,21 +11,20 @@
 // };
 
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-const API_KEY_YANDEX = "85eaff1b-ef9e-4c11-89bc-ca01d1ae43de";
 
-export const weatherApi = createApi({
-    reducerPath: "weatherApi",
+export const airQualityApi = createApi({
+    reducerPath: "airQualityApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: "https://geocode-maps.yandex.ru/1.x",
+        baseUrl: "https://air-quality-api.open-meteo.com/v1/air-quality",
     }),
     endpoints: (builder) => ({
-        getCoor: builder.query({
-            query: (geocode) => ({
-                url: `?apikey=${API_KEY_YANDEX}&geocode=${geocode}&format=json`,
+        getQuality: builder.query({
+            query: (coordinates) => ({
+                url: `?latitude=${coordinates[0]}&longitude=${coordinates[1]}&hourly=pm10,pm2_5`,
                 method: "GET",
             }),
         }),
     }),
 });
 
-export const { useGetCoorQuery } = weatherApi;
+export const { useGetQualityQuery } = airQualityApi;

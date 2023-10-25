@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Container } from "react-bootstrap";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -8,7 +8,11 @@ import InputGroup from "react-bootstrap/InputGroup";
 import { ChartMy, TableData, Navigation } from "../../components/";
 import { Alert, Space, Spin } from "antd";
 import { useTranslation } from "react-i18next";
-// import { useGetUsersQuery } from "../../services/users";
+import { useGetCoorQuery } from "../../services/api-weather";
+import {
+    airQualityApi,
+    useGetQualityQuery,
+} from "../../services/apiAirQuality";
 
 interface ChartData {
     date: any;
@@ -22,9 +26,22 @@ interface ChartData {
 export const Main: React.FC = () => {
     const [spinner, setSpinner] = useState(false);
     const [loc, setLoc] = useState("Omsk");
-    const [tableData, setTableData] = useState<any>([["1"], ["2"], ["3"]]);
+    const [coordinates, setCoordinates] = useState<any>([]);
 
-    // const { data, error, isLoading, isSuccess, isError } = useGetUsersQuery();
+    const [tableData, setTableData] = useState<any>([["1"], ["2"], ["3"]]);
+    const [skip, setSkip] = useState(true);
+    const [skip2, setSkip2] = useState(true);
+    const {
+        data: Coor,
+
+        isSuccess: CoorSucess,
+    } = useGetCoorQuery(loc, { skip });
+    const {
+        data: Quality,
+
+        isSuccess: QualitySuccess,
+    } = useGetQualityQuery(coordinates, { skip });
+
     const { i18n } = useTranslation();
     const [chartData, setChartData] = useState<ChartData[]>([
         {
@@ -39,11 +56,9 @@ export const Main: React.FC = () => {
 
     const locChange = (event: any) => {
         setLoc(event.target.value);
-        console.log(event.target.value);
     };
 
-    const API_KEY_YANDEX = "85eaff1b-ef9e-4c11-89bc-ca01d1ae43de";
-    const API_URL_GEO_DATA = `https://geocode-maps.yandex.ru/1.x/?apikey=${API_KEY_YANDEX}&geocode=${loc}&format=json`;
+    //  const API_URL_GEO_DATA = `https://geocode-maps.yandex.ru/1.x/?apikey=${API_KEY_YANDEX}&geocode=${loc}&format=json`;
 
     const getAvgValue = (data: any) => {
         let newArr = [];
@@ -103,36 +118,83 @@ export const Main: React.FC = () => {
         return newArr;
     };
 
+    useEffect(() => {}, [loc]);
+
     const getWeather = (event: any) => {
         setSpinner(true);
-        fetch(API_URL_GEO_DATA)
-            .then((resp) => resp.json())
-            .then(function (data) {
-                let pos =
-                    data.response.GeoObjectCollection.featureMember[0].GeoObject
-                        .Point.pos;
-                let coordinates = pos.split(" ");
 
-                if (coordinates) {
-                    const API_OPEN_METEO = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${coordinates[0]}&longitude=${coordinates[1]}&hourly=pm10,pm2_5`;
-                    fetch(API_OPEN_METEO)
-                        .then((resp) => resp.json())
-                        .then(function (data) {
-                            let arr = [
-                                [data.hourly.time],
-                                [data.hourly.pm10],
-                                [data.hourly.pm2_5],
-                            ];
+        if (CoorSucess && Coor) {
+            let pos =
+                Coor.response.GeoObjectCollection.featureMember[0].GeoObject
+                    .Point.pos;
+            setCoordinates(pos.split(" "));
+            console.log(coordinates);
+            setSkip2(false);
+            if (QualitySuccess && Quality) {
+                let arr = [
+                    [Quality.hourly.time],
+                    [Quality.hourly.pm10],
+                    [Quality.hourly.pm2_5],
+                ];
 
-                            setTableData(arr);
-                            setChartData(getAvgValue(arr));
-                        });
-                }
-            })
-            .then(() => {
+                setTableData(arr);
+                setChartData(getAvgValue(arr));
                 setSpinner(false);
-            })
-            .catch((error) => {});
+                setSkip2(true);
+                setSkip(true);
+            }
+            // const API_OPEN_METEO = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${coordinates[0]}&longitude=${coordinates[1]}&hourly=pm10,pm2_5`;
+            // fetch(API_OPEN_METEO)
+            //     .then((resp) => resp.json())
+            //     .then(function (data) {
+            //         console.log("here");
+            //         let arr = [
+            //             [data.hourly.time],
+            //             [data.hourly.pm10],
+            //             [data.hourly.pm2_5],
+            //         ];
+
+            //         setTableData(arr);
+            //         setChartData(getAvgValue(arr));
+            //         setSpinner(false);
+            //         setSkip(true);
+            //     });
+        }
+
+        // })
+        // .then(() => {
+        //     setSpinner(false);
+        // })
+
+        // fetch(API_URL_GEO_DATA)
+        //     .then((resp) => resp.json())
+        //     .then(function (data) {
+        //         let pos =
+        //             data.response.GeoObjectCollection.featureMember[0].GeoObject
+        //                 .Point.pos;
+        //         let coordinates = pos.split(" ");
+
+        // if (data) {
+        //     const API_OPEN_METEO = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${coordinates[0]}&longitude=${coordinates[1]}&hourly=pm10,pm2_5`;
+        //     fetch(API_OPEN_METEO)
+        //         .then((resp) => resp.json())
+        //         .then(function (data) {
+        //             let arr = [
+        //                 [data.hourly.time],
+        //                 [data.hourly.pm10],
+        //                 [data.hourly.pm2_5],
+        //             ];
+
+        //             setTableData(arr);
+        //             setChartData(getAvgValue(arr));
+        //         });
+        // }
+        // })
+        // .then(() => {
+        //     setSpinner(false);
+        // })
+        // .catch((error) => {});
+        //}
     };
 
     return (
@@ -148,9 +210,12 @@ export const Main: React.FC = () => {
                     <Button
                         variant="outline-secondary"
                         id="button-addon1"
-                        onClick={(event) => getWeather(event)}
+                        onClick={(event) => {
+                            setSkip(false);
+                            getWeather(event);
+                        }}
                     >
-                        {i18n.t("Load data")}
+                        {i18n.t("loadData")}
                     </Button>
                     <Form.Control
                         aria-label="Example text with button addon"
