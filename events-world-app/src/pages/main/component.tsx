@@ -9,10 +9,7 @@ import { ChartMy, TableData, Navigation } from "../../components/";
 import { Alert, Space, Spin } from "antd";
 import { useTranslation } from "react-i18next";
 import { useGetCoorQuery } from "../../services/api-weather";
-import {
-    airQualityApi,
-    useGetQualityQuery,
-} from "../../services/apiAirQuality";
+import { useGetQualityQuery } from "../../services/apiAirQuality";
 
 interface ChartData {
     date: any;
