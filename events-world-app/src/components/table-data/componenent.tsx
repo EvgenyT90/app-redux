@@ -18,9 +18,9 @@ export const TableData = ({ props }: { props: any }) => {
                     {Array.from({ length: props[0][0].length }).map(
                         (_, index) => (
                             <tr>
-                                <td key={index}>{props[0][0][index]}</td>
-                                <td key={index}>{props[1][0][index]}</td>
-                                <td key={index}>{props[2][0][index]}</td>
+                                <td key={index + 1}>{props[0][0][index]}</td>
+                                <td key={index + 2}>{props[1][0][index]}</td>
+                                <td key={index + 3}>{props[2][0][index]}</td>
                             </tr>
                         ),
                     )}

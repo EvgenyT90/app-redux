@@ -10,6 +10,7 @@ import { Alert, Space, Spin } from "antd";
 import { useTranslation } from "react-i18next";
 import { useGetCoorQuery } from "../../services/api-weather";
 import { useGetQualityQuery } from "../../services/apiAirQuality";
+import { Modals } from "../../components/modal";
 
 interface ChartData {
     date: any;
@@ -28,15 +29,17 @@ export const Main: React.FC = () => {
     const [tableData, setTableData] = useState<any>([["1"], ["2"], ["3"]]);
     const [skip, setSkip] = useState(true);
     const [skip2, setSkip2] = useState(true);
+
     const {
         data: Coor,
-
+        isFetching: CoorError,
         isSuccess: CoorSucess,
     } = useGetCoorQuery(loc, { skip });
     const {
         data: Quality,
-
         isSuccess: QualitySuccess,
+        isError: QualityError,
+        error: QualityErrorVal,
     } = useGetQualityQuery(coordinates, { skip });
 
     const { i18n } = useTranslation();
@@ -252,6 +255,7 @@ export const Main: React.FC = () => {
                     />
                 </InputGroup>
             </Container>
+
             <Container>
                 <Row>
                     <Col sm={4}>
