@@ -118,8 +118,8 @@ export const Main: React.FC = () => {
     useEffect(() => {}, [loc]);
 
     const getWeather = (event: any) => {
-        setSpinner(true);
-
+        // setSpinner(true);
+        console.log(Coor);
         if (CoorSucess && Coor) {
             let pos =
                 Coor.response.GeoObjectCollection.featureMember[0].GeoObject
@@ -194,6 +194,39 @@ export const Main: React.FC = () => {
         //}
     };
 
+    const handleSubmit = (e: any) => {
+        e.preventDefault();
+        setSkip(false);
+        setSpinner(true);
+    };
+
+    useEffect(() => {
+        if (CoorSucess && Coor) {
+            let pos =
+                Coor.response.GeoObjectCollection.featureMember[0].GeoObject
+                    .Point.pos;
+            setCoordinates(pos.split(" "));
+            console.log(coordinates);
+            setSkip2(false);
+        }
+    }, [Coor]);
+
+    useEffect(() => {
+        if (QualitySuccess && Quality) {
+            let arr = [
+                [Quality.hourly.time],
+                [Quality.hourly.pm10],
+                [Quality.hourly.pm2_5],
+            ];
+
+            setTableData(arr);
+            setChartData(getAvgValue(arr));
+            setSpinner(false);
+            setSkip2(true);
+            setSkip(true);
+        }
+    }, [Quality]);
+
     return (
         <main>
             {/* {isLoading && "Загрузка......."}
@@ -207,10 +240,7 @@ export const Main: React.FC = () => {
                     <Button
                         variant="outline-secondary"
                         id="button-addon1"
-                        onClick={(event) => {
-                            setSkip(false);
-                            getWeather(event);
-                        }}
+                        onClick={handleSubmit}
                     >
                         {i18n.t("loadData")}
                     </Button>
